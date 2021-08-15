@@ -21,8 +21,6 @@ import java.time.LocalDateTime;
 @Slf4j
 public class CreditCardController {
 
-    WebClient webClient = WebClient.create("http://localhost:8013/customer");
-
     @Autowired
     CreditCardService creditCardService;
 
@@ -36,14 +34,15 @@ public class CreditCardController {
         return creditCardService.findById(id);
     }
 
+    @GetMapping("/findCreditCards/{id}")
+    public Flux<CreditCard> findCreditCardByCustomer(@PathVariable String id){
+        return creditCardService.findCreditCardByCustomer(id);
+    }
+
     @PostMapping("/create")
     public Mono<ResponseEntity<CreditCard>> create(@RequestBody CreditCard creditCard){
-        Mono<Customer> customer = webClient.get().uri("/find/{id}", creditCard.getCustomer().getId())
-                                        .accept(MediaType.APPLICATION_JSON)
-                                        .retrieve()
-                                        .bodyToMono(Customer.class);
 
-        return customer.flatMap(c -> {
+        return creditCardService.findCustomerById(creditCard.getCustomer().getId()).flatMap(c -> {
                         creditCard.setCustomer(c);
                         creditCard.setDate(LocalDateTime.now());
                         return creditCardService.create(creditCard);
@@ -55,15 +54,13 @@ public class CreditCardController {
     @PutMapping("/update")
     public Mono<ResponseEntity<CreditCard>> update(@RequestBody CreditCard creditCard) {
         return creditCardService.findById(creditCard.getId()) // REVISO SI EXISTE LA TARJETA DE CREDITO
-                .flatMap(cc -> webClient.get().uri("/find/{id}", creditCard.getCustomer().getId())
-                                .accept(MediaType.APPLICATION_JSON)
-                                .retrieve()
-                                .bodyToMono(Customer.class).flatMap(customer -> {
-                                                                creditCard.setCustomer(customer);
-                                                                return creditCardService.update(creditCard);
-                                                            }))
-                .map(cc->new ResponseEntity<>(cc , HttpStatus.CREATED))
-                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .flatMap(cc -> creditCardService.findCustomerById(creditCard.getCustomer().getId())
+                                .flatMap(customer -> {
+                                                        creditCard.setCustomer(customer);
+                                                        return creditCardService.update(creditCard);
+                                        }))
+                                        .map(cc->new ResponseEntity<>(cc , HttpStatus.CREATED))
+                                        .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
         //        return creditCardService.update(c)
 //                .map(savedCustomer -> new ResponseEntity<>(savedCustomer, HttpStatus.CREATED))
 //                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));

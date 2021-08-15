@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-@Document("CREDITCARD")
+@Document("CreditCard")
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreditCard {

@@ -1,13 +1,17 @@
 package com.java.everis.mscreditcard;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class MsCreditcardApplicationTests {
+@SpringBootTest(classes = {MsCreditcardApplication.class})
+public class MsCreditcardApplicationTests {
 
 	@Test
-	void contextLoads() {
+	public void contextLoads() {
+		assertTrue(true);
 	}
 
 }
+
