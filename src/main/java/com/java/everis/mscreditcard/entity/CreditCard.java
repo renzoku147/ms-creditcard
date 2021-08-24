@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,13 +16,13 @@ import java.time.LocalDateTime;
 @Document("CreditCard")
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreditCard {
-    @NotNull
+public class CreditCard implements Card{
     private String id;
 
-    @NotEmpty
+    @NotNull
     private String cardNumber;
 
+    @NotNull
     private Customer customer;
 
     @NotNull
@@ -31,6 +31,5 @@ public class CreditCard {
     @NotNull
     private LocalDate expirationDate;
 
-    @NotNull
     private LocalDateTime date;
 }

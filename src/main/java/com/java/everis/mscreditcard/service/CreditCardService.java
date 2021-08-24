@@ -1,5 +1,8 @@
 package com.java.everis.mscreditcard.service;
 
+import java.util.Optional;
+
+import com.java.everis.mscreditcard.entity.Card;
 import com.java.everis.mscreditcard.entity.CreditCard;
 import com.java.everis.mscreditcard.entity.Customer;
 import reactor.core.publisher.Flux;
@@ -20,4 +23,8 @@ public interface CreditCardService {
     Mono<Customer> findCustomerById(String id);
 
     Flux<CreditCard> findCreditCardByCustomer(String id);
+    
+    Mono<CreditCard> findCreditCardByCardNumber(String cardNumber);
+    
+    Mono<Optional<Card>> verifyCardNumber(String t);
 }
